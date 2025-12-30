@@ -1,0 +1,9 @@
+requests
+datetime
+schedule
+random2
+gql
+aiohttp
+numpy
+pandas
+scipy

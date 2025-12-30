@@ -1,0 +1,72 @@
+{
+    "title": "Load generator",
+    "description": "Load generator configuration",
+    "type": "object", 
+    "properties" : {
+        "configuration": {
+            "type": "array",
+            "title": "Config",
+            "items" : {
+                "type": "object",
+                "properties" : {
+                    "metrics_url": {
+                        "type": "string",
+                        "title": "Metrics URL",
+                        "default": "https://metric-api.newrelic.com/metric/v1"
+                    },
+                    "metric_name": {
+                        "type": "string",
+                        "title": "Metric name" ,
+                        "default": "test.signalgenerator"
+                    },
+                    "dispatch_frequency": {
+                        "type": "number",
+                        "title": "How often to send accumulated data to New Relic (seconds)"
+                    },
+                    "stage_config": {
+                        "type": "array",
+                        "title": "Metric Stage Configuration",
+                        "items": {
+                            "type": "object",
+                            "title": "Stage",
+                            "properties": {
+                                "name": {
+                                    "type": "string",
+                                    "title": "Stage name"
+                                }
+                                ,
+                                "duration": {
+                                    "type": "number",
+                                    "title": "Duration in seconds"
+                                }
+                                ,
+                                "frequency": {
+                                    "type": "number",
+                                    "title": "Metrics per minute"
+                                }
+                                ,
+                                "low": {
+                                    "type": "number",
+                                    "title": "Low value"
+                                },
+                                "high": {
+                                    "type": "number",
+                                    "title": "High value"
+                                },
+                                
+                                "los": {
+                                    "type": "number",
+                                    "title": "Signal loss %",
+                                    "default": "0"
+                                }
+                            
+                            }
+                        }
+
+                        
+                    }
+                }
+            }
+        }
+    }
+  }

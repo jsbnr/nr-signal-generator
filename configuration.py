@@ -6,7 +6,7 @@ class get_configuration():
     def get_config(newrelic_user_key,package_uuid,account_id,document_id):
         nr_headers = {'Content-Type': 'application/json', 'Api-Key': str(newrelic_user_key), 'NewRelic-Package-Id': str(package_uuid)}
         transport = AIOHTTPTransport(url="https://api.newrelic.com/graphql", headers=nr_headers)
-        client = Client(transport=transport, fetch_schema_from_transport=True)
+        client = Client(transport=transport, fetch_schema_from_transport=False)
         query = gql(
             """
             query ($accountId: Int!, $documentId: String!){

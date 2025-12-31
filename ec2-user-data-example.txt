@@ -1,0 +1,68 @@
+#EC2 User data example (very rough!) to run the NR Signal Generator on instance startup
+
+
+apt-get update
+# INstall required packages 
+DEBIAN_FRONTEND=noninteractive  apt-get install -y python3-venv
+
+#You might need some of theese too....
+# DEBIAN_FRONTEND=noninteractive apt-get install -y \
+#     python3 \
+#     python3-pip \
+#     python3-venv \
+#     awscli \
+#     git
+
+# download files from github
+cd /opt
+git clone https://github.com/jsbnr/nr-signal-generator.git
+cd nr-signal-generator
+
+# setup python virtual environment and install dependencies
+python3 -m venv venv
+source venv/bin/activate
+pip install --upgrade pip
+pip install -r requirements.txt
+
+# Create environment file with New Relic details
+cat > /opt/nr-signal-generator/.env <<'EOF'
+NEWRELIC_PACKAGE_UUID=xxx-xxx-xxx-xxx
+NEWRELIC_DOCUMENT_ID=xxxxx
+NEWRELIC_ACCOUNT_ID=0
+NEWRELIC_API_KEY=...fFFFFNRAL
+NEWRELIC_USER_KEY=NRAK-XXXXX
+EOF
+chmod 600 .env  # Secure the env file
+
+# Create systemd service for auto-start and restart
+cat > /etc/systemd/system/signal-generator.service <<'EOF'
+[Unit]
+Description=NR Signal Generator
+After=network.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/opt/nr-signal-generator
+Environment="PATH=/opt/nr-signal-generator/venv/bin"
+EnvironmentFile=/opt/nr-signal-generator/.env
+ExecStart=/opt/nr-signal-generator/venv/bin/python3 /opt/nr-signal-generator/generator.py
+Restart=always
+RestartSec=10
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+# Enable and start the service
+systemctl daemon-reload
+systemctl enable signal-generator.service
+systemctl start signal-generator.service
+
+# Useful commands:
+#   View logs:    sudo journalctl -u signal-generator.service -f
+#   Restart:      sudo systemctl restart signal-generator.service
+#   Stop:         sudo systemctl stop signal-generator.service
+#   Status:       sudo systemctl status signal-generator.service
